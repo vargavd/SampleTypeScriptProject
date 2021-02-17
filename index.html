@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>ProjectManager</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <link rel="stylesheet" href="src/app.css" />
+</head>
+
+<body>
+
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col">
+                <h1>VargaVD's gmaps project with TypeScript</h1>
+            </div>
+        </div>
+
+        <div class="alert alert-secondary">
+            <p>This wonderful, extremely advanced and AI-enhanced project is just for learning TypeScript.</p>
+            <strong>This project uses:</strong>
+            <ul>
+                <li>Bootstrap 4.6</li>
+                <li>TypeScript</li>
+                <li><a href="https://www.npmjs.com/package/lite-server" target="_blank">Lite-server</a></li>
+            </ul>
+        </div>
+
+        <div class="row">
+            <div class="col-4">
+                <strong class="mb-2 d-block">Add Marker</strong>
+                <div class="form-group">
+                    <input placeholder="Title" type="text" class="form-control" id="new-marker-title"
+                        name="marker-title">
+                </div>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Address" id="new-marker-address">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button" id="add-marker">Add</button>
+                    </div>
+                </div>
+                <strong class="my-2 d-block">Marker list</strong>
+                <div id="marker-list" class="list-group">
+                    <a class="marker-list-item marker-list-item-template list-group-item list-group-item-action"
+                        title="REMOVE">
+                        <div class="d-flex w-100 justify-content-between">
+                            <strong class="marker-title mb-1 d-block">Marker Name</strong>
+                            <small class="remove-marker">REMOVE</small>
+                        </div>
+                        <p class="marker-address mb-1">Address 1 Address 2101 Address</p>
+                        <small>
+                            <strong>Lat:</strong> <span class="marker-latitude">0.3214</span>
+                            <strong>Lng:</strong> <span class="marker-longitude">-10.43</span>
+                        </small>
+                    </a>
+                </div>
+            </div>
+            <div class="col-8">
+                <strong class="mb-2 d-block">Center Map with coordinates or with address</strong>
+                <div class="input-group mb-3">
+                    <input type="number" class="form-control" placeholder="Latitude" id="latitude">
+                    <input type="number" class="form-control" placeholder="Longitude" id="longitude">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button" id="lat-lng-center">Map Center to Coords</button>
+                    </div>
+                </div>
+
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Address" id="address">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button" id="address-center">Map Center to Address</button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div id="map"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script src="src/sensitive.js"></script>
+
+    <div id="google-map-script-wrapper"></div>
+
+    <script src="src/utils/map/map.js"></script>
+    <script src="src/utils/marker/marker.js"></script>
+    <script src="src/app.js"></script>
+
+    <script>
+        var gmapScript = document.createElement('script');
+        gmapScript.setAttribute('src', `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&callback=initMap&libraries=&v=weekly`);
+
+        document.getElementById("google-map-script-wrapper").appendChild(gmapScript);
+    </script>
+
+
+</body>
+
+</html>

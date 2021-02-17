@@ -1,0 +1,13 @@
+.container-fluid {
+    background-color: #fefefe;
+    max-width: 1200px;
+}
+
+.marker-list-item .remove-marker {
+    cursor: pointer;
+    color: red;
+}
+
+#map {
+    height: 500px;
+}
