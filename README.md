@@ -3,7 +3,7 @@ Google Maps Project for practising TypeScript
 
 Features:
   - Add Marker with address
-  - Center map with coordinates (latitude/longiture) or with address
+  - Center map with coordinates (latitude/longitude) or with address
   - Marker list
 
 
