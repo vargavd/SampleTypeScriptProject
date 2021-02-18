@@ -32,7 +32,6 @@ var App;
                     $marker.find('.marker-longitude').text(marker.longitude);
                     $marker.find('.remove-marker').on('click', _this.removeMarkerFuncGenerator(index));
                     _this.$markerList.append($marker);
-                    gMap.addMarker(marker.latitude, marker.longitude);
                 });
             };
             this.removeMarkerFuncGenerator = function (markerIndex) { return function () {
@@ -44,12 +43,15 @@ var App;
                 }
                 _this.markers.splice(markerIndex, 1);
                 _this.renderMarkers();
+                _this.markersChanged(_this.markers);
             }; };
             this.addMarkerButtonClicked = function () {
                 var title = _this.$newMarkerTitleInput.val(), address = _this.$newMarkerAddressInput.val();
                 if (typeof title !== 'string' || title.length === 0 || typeof address !== 'string' || address.length === 0) {
                     return;
                 }
+                _this.$newMarkerTitleInput.val('');
+                _this.$newMarkerAddressInput.val('');
                 axios.get("https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&key=" + GOOGLE_API_KEY)
                     .then(function (response) {
                     if (response.data.status !== 'ZERO_RESULT') {
@@ -64,6 +66,15 @@ var App;
             this.$newMarkerTitleInput.val('London');
             this.$newMarkerAddressInput.val('London, England');
             this.$addMarkerButton.trigger('click');
+            this.$newMarkerTitleInput.val('Budapest');
+            this.$newMarkerAddressInput.val('Budapest, Ferenciek Tere');
+            this.$addMarkerButton.trigger('click');
+            this.$newMarkerTitleInput.val('New York');
+            this.$newMarkerAddressInput.val('New York, Empire State Building');
+            this.$addMarkerButton.trigger('click');
+            setTimeout(function () {
+                _this.removeMarkerFuncGenerator(1)();
+            }, 500);
         }
         return MarkerList;
     }());

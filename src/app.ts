@@ -14,7 +14,11 @@ let
 
     // events
     markersChanged = (markers: App.Marker[]) => {
-        console.log(markers);
+        gMap.removeAllMarkers();
+
+        markers.forEach((marker) => {
+            gMap.addMarker(marker.latitude, marker.longitude);
+        });
     },
 
     // this function will be called by google maps

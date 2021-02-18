@@ -45,6 +45,12 @@ var App;
                 map: this.gMap
             }));
         };
+        Map.prototype.removeAllMarkers = function () {
+            this.gMarkers.forEach(function (gMarker) {
+                gMarker.setMap(null);
+            });
+            this.gMarkers = [];
+        };
         return Map;
     }());
     App.Map = Map;

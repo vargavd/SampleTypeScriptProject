@@ -1,6 +1,9 @@
 "use strict";
 var gMap, markerList, markersChanged = function (markers) {
-    console.log(markers);
+    gMap.removeAllMarkers();
+    markers.forEach(function (marker) {
+        gMap.addMarker(marker.latitude, marker.longitude);
+    });
 }, initMap = function () {
     gMap = new App.Map(30, 0, 2.1);
     markerList = new App.MarkerList(markersChanged);

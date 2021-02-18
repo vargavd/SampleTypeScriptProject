@@ -47,6 +47,13 @@ namespace App {
                 map: this.gMap
             }));
         }
+        removeAllMarkers() {
+            this.gMarkers.forEach(gMarker => {
+                gMarker.setMap(null);
+            });
+
+            this.gMarkers = [];
+        }
 
         constructor(lat: number, lng: number, zoom: number = 8) {
             // set up the events
