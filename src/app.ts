@@ -2,8 +2,8 @@
 /// <reference path="./map/map.ts" />
 /// <reference path="./markerList/markerList.ts" />
 
+// TODO: remove infoWindow when deleting marker
 // TODO: create boundary for markers
-// TODO: SPLIT CODE MORE
 // TODO: implement events (Singleton maybe?)
 // TODO: VALIDATION
 
@@ -17,7 +17,7 @@ let
         gMap.removeAllMarkers();
 
         markers.forEach((marker) => {
-            gMap.addMarker(marker.latitude, marker.longitude);
+            gMap.addMarker(marker.latitude, marker.longitude, marker.title, marker.address);
         });
     },
 

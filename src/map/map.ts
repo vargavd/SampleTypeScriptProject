@@ -3,6 +3,7 @@ namespace App {
         // google maps related vars
         private gMap: google.maps.Map;
         private gMarkers: google.maps.Marker[] = [];
+        private infoWindows: google.maps.InfoWindow[] = [];
 
         // DOM (centering)
         $latInput = $('#latitude') as JQuery<HTMLInputElement>;
@@ -41,11 +42,26 @@ namespace App {
         }
 
         // public funcs
-        addMarker(lat: number, lng: number) {
-            this.gMarkers.push(new google.maps.Marker({
+        addMarker(lat: number, lng: number, title: string = '', address: string = '') {
+            const marker = new google.maps.Marker({
                 position: { lat, lng },
-                map: this.gMap
-            }));
+                map: this.gMap,
+                title
+            });
+
+            this.gMarkers.push(marker);
+
+            if (title && address) {
+                const infoWindow = new google.maps.InfoWindow({
+                    content: `<strong>${title}</strong><br />${address}`
+                });
+
+                this.infoWindows.push(infoWindow);
+
+                marker.addListener("click", () => {
+                    infoWindow.open(this.gMap, marker);
+                });
+            }
         }
         removeAllMarkers() {
             this.gMarkers.forEach(gMarker => {

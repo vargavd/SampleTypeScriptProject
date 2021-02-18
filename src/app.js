@@ -2,7 +2,7 @@
 var gMap, markerList, markersChanged = function (markers) {
     gMap.removeAllMarkers();
     markers.forEach(function (marker) {
-        gMap.addMarker(marker.latitude, marker.longitude);
+        gMap.addMarker(marker.latitude, marker.longitude, marker.title, marker.address);
     });
 }, initMap = function () {
     gMap = new App.Map(30, 0, 2.1);
