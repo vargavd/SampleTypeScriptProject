@@ -1,31 +1,24 @@
 /// <reference path="./utils/GoogleGeocodeResultType.ts" />
-/// <reference path="./map/map.ts" />
-/// <reference path="./markerList/markerList.ts" />
+/// <reference path="./models/marker/marker.ts" />
+/// <reference path="./state/markersState.ts" />
 
 // TODO: remove infoWindow when deleting marker
+// TODO: inline sourceMap - for better readability in the file explorer
 // TODO: create boundary for markers
 // TODO: implement events (Singleton maybe?)
 // TODO: VALIDATION
 
 let
     // main consts
-    gMap: App.Map,
-    markerList: App.MarkerList,
-
-    // events
-    markersChanged = (markers: App.Marker[]) => {
-        gMap.removeAllMarkers();
-
-        markers.forEach((marker) => {
-            gMap.addMarker(marker.latitude, marker.longitude, marker.title, marker.address);
-        });
-    },
+    map: App.Map,
+    markersState: App.MarkersState,
 
     // this function will be called by google maps
     initMap = function () {
-        gMap = new App.Map(30, 0, 2.1);
+        map = new App.Map(30, 0, 2.1);
 
-        markerList = new App.MarkerList(markersChanged);
+        markersState = App.MarkersState.getInstance(map.gMap);
     };
 
+console.log("itworks");
 

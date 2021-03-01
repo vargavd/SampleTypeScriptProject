@@ -31,22 +31,29 @@ var App;
                 }
             };
             this.setCenter = function (lat, lng) {
-                _this.gMap.setCenter({ lat: lat, lng: lng });
+                _this._gMap.setCenter({ lat: lat, lng: lng });
             };
             this.$latLngButton.on('click', this.latLngButtonClicked);
             this.$addressButton.on('click', this.addressButtonClicked);
-            this.gMap = new google.maps.Map(document.getElementById("map"), {
+            this._gMap = new google.maps.Map(document.getElementById("map"), {
                 center: { lat: lat, lng: lng },
                 zoom: zoom
             });
         }
+        Object.defineProperty(Map.prototype, "gMap", {
+            get: function () {
+                return this._gMap;
+            },
+            enumerable: false,
+            configurable: true
+        });
         Map.prototype.addMarker = function (lat, lng, title, address) {
             var _this = this;
             if (title === void 0) { title = ''; }
             if (address === void 0) { address = ''; }
             var marker = new google.maps.Marker({
                 position: { lat: lat, lng: lng },
-                map: this.gMap,
+                map: this._gMap,
                 title: title
             });
             this.gMarkers.push(marker);
@@ -56,7 +63,7 @@ var App;
                 });
                 this.infoWindows.push(infoWindow_1);
                 marker.addListener("click", function () {
-                    infoWindow_1.open(_this.gMap, marker);
+                    infoWindow_1.open(_this._gMap, marker);
                 });
             }
         };

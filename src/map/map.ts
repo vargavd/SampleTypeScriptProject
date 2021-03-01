@@ -1,9 +1,13 @@
 namespace App {
     export class Map {
         // google maps related vars
-        private gMap: google.maps.Map;
+        private _gMap: google.maps.Map;
         private gMarkers: google.maps.Marker[] = [];
         private infoWindows: google.maps.InfoWindow[] = [];
+
+        get gMap(): google.maps.Map {
+            return this._gMap;
+        }
 
         // DOM (centering)
         $latInput = $('#latitude') as JQuery<HTMLInputElement>;
@@ -38,14 +42,14 @@ namespace App {
             }
         };
         private setCenter = (lat: number, lng: number) => {
-            this.gMap.setCenter({ lat, lng })
+            this._gMap.setCenter({ lat, lng })
         }
 
         // public funcs
         addMarker(lat: number, lng: number, title: string = '', address: string = '') {
             const marker = new google.maps.Marker({
                 position: { lat, lng },
-                map: this.gMap,
+                map: this._gMap,
                 title
             });
 
@@ -59,7 +63,7 @@ namespace App {
                 this.infoWindows.push(infoWindow);
 
                 marker.addListener("click", () => {
-                    infoWindow.open(this.gMap, marker);
+                    infoWindow.open(this._gMap, marker);
                 });
             }
         }
@@ -77,7 +81,7 @@ namespace App {
             this.$addressButton.on('click', this.addressButtonClicked);
 
             // create the map
-            this.gMap = new google.maps.Map(document.getElementById("map") as HTMLElement, {
+            this._gMap = new google.maps.Map(document.getElementById("map") as HTMLElement, {
                 center: { lat, lng },
                 zoom: zoom
             });
