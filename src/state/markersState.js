@@ -24,7 +24,9 @@ var App;
         MarkersState.prototype.addMarker = function (lat, lng, title, address) {
             var marker = new App.Marker(lat, lng, title, address, MarkersState.map);
             this.markers.push(marker);
-            this.addMarkerListeners.forEach(function (listener) { return listener(marker); });
+            this.addMarkerListeners.forEach(function (listener) {
+                return listener(title, address, lat, lng, marker.id);
+            });
             return marker;
         };
         MarkersState.prototype.removeMarker = function (id) {
@@ -37,7 +39,8 @@ var App;
             if (removedMarkerIndex === -1) {
                 throw new Error("The following id (" + id + ") is not found in the markers array.");
             }
-            this.markers.splice(removedMarkerIndex, 1);
+            var marker = this.markers.splice(removedMarkerIndex, 1);
+            marker[0].gMarker.setMap(null);
             this.removeMarkerListeners.forEach(function (listener) { return listener(id); });
         };
         return MarkersState;

@@ -5,8 +5,6 @@ var App;
         function Map(lat, lng, zoom) {
             var _this = this;
             if (zoom === void 0) { zoom = 8; }
-            this.gMarkers = [];
-            this.infoWindows = [];
             this.$latInput = $('#latitude');
             this.$lngInput = $('#longitude');
             this.$latLngButton = $('#lat-lng-center');
@@ -47,32 +45,6 @@ var App;
             enumerable: false,
             configurable: true
         });
-        Map.prototype.addMarker = function (lat, lng, title, address) {
-            var _this = this;
-            if (title === void 0) { title = ''; }
-            if (address === void 0) { address = ''; }
-            var marker = new google.maps.Marker({
-                position: { lat: lat, lng: lng },
-                map: this._gMap,
-                title: title
-            });
-            this.gMarkers.push(marker);
-            if (title && address) {
-                var infoWindow_1 = new google.maps.InfoWindow({
-                    content: "<strong>" + title + "</strong><br />" + address
-                });
-                this.infoWindows.push(infoWindow_1);
-                marker.addListener("click", function () {
-                    infoWindow_1.open(_this._gMap, marker);
-                });
-            }
-        };
-        Map.prototype.removeAllMarkers = function () {
-            this.gMarkers.forEach(function (gMarker) {
-                gMarker.setMap(null);
-            });
-            this.gMarkers = [];
-        };
         return Map;
     }());
     App.Map = Map;

@@ -1,5 +1,5 @@
 namespace App {
-    export type AddMarkerListener = (marker: App.Marker) => void;
+    export type AddMarkerListener = (title: string, address: string, lat: number, lng: number, id: string) => void;
     export type RemoveMarkerListener = (id: string) => void;
 
     export class MarkersState {
@@ -39,7 +39,9 @@ namespace App {
 
             this.markers.push(marker);
 
-            this.addMarkerListeners.forEach((listener) => listener(marker));
+            this.addMarkerListeners.forEach((listener) =>
+                listener(title, address, lat, lng, marker.id)
+            );
 
             return marker;
         }
@@ -56,7 +58,8 @@ namespace App {
                 throw new Error(`The following id (${id}) is not found in the markers array.`);
             }
 
-            this.markers.splice(removedMarkerIndex, 1);
+            const marker = this.markers.splice(removedMarkerIndex, 1);
+            marker[0].gMarker.setMap(null);
 
             this.removeMarkerListeners.forEach(listener => listener(id));
         }

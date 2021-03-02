@@ -2,8 +2,6 @@ namespace App {
     export class Map {
         // google maps related vars
         private _gMap: google.maps.Map;
-        private gMarkers: google.maps.Marker[] = [];
-        private infoWindows: google.maps.InfoWindow[] = [];
 
         get gMap(): google.maps.Map {
             return this._gMap;
@@ -43,36 +41,6 @@ namespace App {
         };
         private setCenter = (lat: number, lng: number) => {
             this._gMap.setCenter({ lat, lng })
-        }
-
-        // public funcs
-        addMarker(lat: number, lng: number, title: string = '', address: string = '') {
-            const marker = new google.maps.Marker({
-                position: { lat, lng },
-                map: this._gMap,
-                title
-            });
-
-            this.gMarkers.push(marker);
-
-            if (title && address) {
-                const infoWindow = new google.maps.InfoWindow({
-                    content: `<strong>${title}</strong><br />${address}`
-                });
-
-                this.infoWindows.push(infoWindow);
-
-                marker.addListener("click", () => {
-                    infoWindow.open(this._gMap, marker);
-                });
-            }
-        }
-        removeAllMarkers() {
-            this.gMarkers.forEach(gMarker => {
-                gMarker.setMap(null);
-            });
-
-            this.gMarkers = [];
         }
 
         constructor(lat: number, lng: number, zoom: number = 8) {

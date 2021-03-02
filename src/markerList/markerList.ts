@@ -3,118 +3,103 @@ declare var axios: any;
 
 namespace App {
 
-    // export class Marker {
-    //     constructor(
-    //         public title: string,
-    //         public address: string,
-    //         public latitude: number,
-    //         public longitude: number) { }
-    // }
+    export class MarkerList {
+        private _markersState: App.MarkersState;
 
-    // export class MarkerList {
-    //     // NEW MARKER DOM
-    //     $newMarkerTitleInput = $('#new-marker-title') as JQuery<HTMLInputElement>;
-    //     $newMarkerAddressInput = $('#new-marker-address') as JQuery<HTMLInputElement>;
-    //     $addMarkerButton = $('#add-marker') as JQuery<HTMLButtonElement>;
+        // NEW MARKER DOM
+        $newMarkerTitleInput = $('#new-marker-title') as JQuery<HTMLInputElement>;
+        $newMarkerAddressInput = $('#new-marker-address') as JQuery<HTMLInputElement>;
+        $addMarkerButton = $('#add-marker') as JQuery<HTMLButtonElement>;
 
-    //     // MARKER LIST DOM
-    //     $markerList = $('#marker-list') as JQuery<HTMLDivElement>;
-    //     $markerTemplate = $('.marker-list-item-template').detach() as JQuery<HTMLLinkElement>;
+        // MARKER LIST DOM
+        $markerList = $('#marker-list') as JQuery<HTMLDivElement>;
+        $markerTemplate = $('.marker-list-item-template').detach().removeClass('marker-list-item-template') as JQuery<HTMLLinkElement>;
 
-    //     // private consts
-    //     markers: Marker[] = [];
+        // private funcs
+        markerAdded = (title: string, address: string, lat: number, lng: number, id: string) => {
+            var
+                // DOM
+                $marker = this.$markerTemplate.clone();
 
-    //     // private funcs
-    //     renderMarkers = () => {
-    //         // empty the marker list DOM
-    //         this.$markerList.empty();
+            // set up marker DOM
+            $marker.find('.marker-title').text(title);
+            $marker.find('.marker-address').text(address);
+            $marker.find('.marker-latitude').text(lat);
+            $marker.find('.marker-longitude').text(lng);
+            $marker.attr('data-id', id);
 
-    //         // rerender the marker list
-    //         this.markers.forEach((marker: Marker, index: number) => {
-    //             var
-    //                 // DOM
-    //                 $marker = this.$markerTemplate.clone();
+            // add event
+            $marker.find('.remove-marker').on('click', this.removeMarkerClicked);
 
-    //             // set up marker DOM
-    //             $marker.attr('data-index', index);
-    //             $marker.find('.marker-title').text(marker.title);
-    //             $marker.find('.marker-address').text(marker.address);
-    //             $marker.find('.marker-latitude').text(marker.latitude);
-    //             $marker.find('.marker-longitude').text(marker.longitude);
+            this.$markerList.append($marker);
+        };
+        markerRemoved = (markerId: string) => {
+            const $marker = $(`.marker-list-item[data-id="${markerId}"]`);
 
-    //             // remove event
-    //             $marker.find('.remove-marker').on('click', this.removeMarkerFuncGenerator(index));
+            if ($marker.length === 0) {
+                throw new Error('Trying to remove element ' + markerId + ' which does not exists.');
+            }
 
-    //             this.$markerList.append($marker);
-    //         });
-    //     };
-    //     removeMarkerFuncGenerator = (markerIndex: number) => () => {
-    //         if (this.markers.length === 0) {
-    //             throw new Error('Trying to remove element ' + markerIndex + ' when markers array is empty');
-    //         }
+            $marker.remove();
+        };
+        addMarkerButtonClicked = () => {
+            const
+                title = this.$newMarkerTitleInput.val(),
+                address = this.$newMarkerAddressInput.val();
 
-    //         if (0 > markerIndex || markerIndex > this.markers.length - 1) {
-    //             throw new RangeError('markerIndex (' + markerIndex + ') is out of range, should be between' + 0 + ' and ' + (this.markers.length - 1));
-    //         }
+            if (typeof title !== 'string' || title.length === 0 || typeof address !== 'string' || address.length === 0) {
+                return; // TODO: VALIDATION
+            }
 
-    //         // remove marker from the list
-    //         this.markers.splice(markerIndex, 1);
+            this.$newMarkerTitleInput.val('');
+            this.$newMarkerAddressInput.val('');
 
-    //         // render markers
-    //         this.renderMarkers();
+            axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${GOOGLE_API_KEY}`)
+                .then((response: GoogleGeocodeResult) => {
+                    if (response.data.status !== 'ZERO_RESULT') {
+                        const location = response.data.results[0].geometry.location;
 
-    //         // tell app.js that the markers have changed
-    //         this.markersChanged(this.markers);
+                        // tell the state object to add this marker
+                        this._markersState.addMarker(location.lat, location.lng, title, address);
+                    }
+                });
+        };
+        removeMarkerClicked = (event: Event) => {
+            var
+                $removeLink = $(event.target as HTMLElement),
+                $marker = $removeLink.closest('.marker-list-item'),
 
-    //     };
-    //     addMarkerButtonClicked = () => {
-    //         const
-    //             title = this.$newMarkerTitleInput.val(),
-    //             address = this.$newMarkerAddressInput.val();
+                // misc
+                markerId = $marker.attr('data-id') as string;
 
-    //         if (typeof title !== 'string' || title.length === 0 || typeof address !== 'string' || address.length === 0) {
-    //             return; // TODO: VALIDATION
-    //         }
-
-    //         this.$newMarkerTitleInput.val('');
-    //         this.$newMarkerAddressInput.val('');
-
-    //         axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${GOOGLE_API_KEY}`)
-    //             .then((response: GoogleGeocodeResult) => {
-    //                 if (response.data.status !== 'ZERO_RESULT') {
-    //                     const location = response.data.results[0].geometry.location;
-
-    //                     // adding the new marker to the list
-    //                     this.markers.push(new Marker(title, address, location.lat, location.lng));
-
-    //                     // render markers
-    //                     this.renderMarkers();
-
-    //                     // tell app.js that the markers have changed
-    //                     this.markersChanged(this.markers);
-    //                 }
-    //             });
-    //     };
+            this._markersState.removeMarker(markerId);
+        };
 
 
-    //     constructor(public markersChanged: (markers: Marker[]) => void) {
-    //         // set up events
-    //         this.$addMarkerButton.on('click', this.addMarkerButtonClicked);
+        constructor(markersState: App.MarkersState) {
+            this._markersState = markersState;
 
-    //         // TESTING
-    //         this.$newMarkerTitleInput.val('London');
-    //         this.$newMarkerAddressInput.val('London, England');
-    //         this.$addMarkerButton.trigger('click');
-    //         this.$newMarkerTitleInput.val('Budapest');
-    //         this.$newMarkerAddressInput.val('Budapest, Ferenciek Tere');
-    //         this.$addMarkerButton.trigger('click');
-    //         this.$newMarkerTitleInput.val('New York');
-    //         this.$newMarkerAddressInput.val('New York, Empire State Building');
-    //         this.$addMarkerButton.trigger('click');
+            // set up DOM events
+            this.$addMarkerButton.on('click', this.addMarkerButtonClicked);
 
-    //         setTimeout(() => {
-    //             this.removeMarkerFuncGenerator(1)();
-    //         }, 500);
-    //     }
-    // }
+            // set up state events
+            this._markersState.listenToAdding(this.markerAdded);
+            this._markersState.listenToRemoving(this.markerRemoved);
+
+            // TESTING
+            this.$newMarkerTitleInput.val('London');
+            this.$newMarkerAddressInput.val('London, England');
+            this.$addMarkerButton.trigger('click');
+            this.$newMarkerTitleInput.val('Budapest');
+            this.$newMarkerAddressInput.val('Budapest, Ferenciek Tere');
+            this.$addMarkerButton.trigger('click');
+            this.$newMarkerTitleInput.val('New York');
+            this.$newMarkerAddressInput.val('New York, Empire State Building');
+            this.$addMarkerButton.trigger('click');
+
+            // setTimeout(() => {
+            //     this.removeMarkerFuncGenerator(1)();
+            // }, 500);
+        }
+    }
 }
